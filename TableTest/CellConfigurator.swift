@@ -8,7 +8,20 @@
 
 import UIKit
 
+// MARK: - Default Implementations
 protocol ConfigurableCell {
+//    associatedtype DataType
+//    func configure(data: DataType)
+    associatedtype ViewType: ConfigurableCellContainerView
+    var view: ViewType { get }
+}
+extension ConfigurableCell {
+    static var reuseId: String {
+        return String(describing: ViewType.self)
+    }
+}
+
+protocol ConfigurableCellContainerView: UIView {
     associatedtype DataType
     func configure(data: DataType)
 }
@@ -18,17 +31,18 @@ protocol CellConfigurator {
     func configure(cell: UIView)
 }
 
-class TableCellConfigurator<CellType: ConfigurableCell, DataType>: CellConfigurator where CellType.DataType == DataType, CellType: UITableViewCell {
+class TableCellConfigurator<CellType: ConfigurableCell, ViewType>: CellConfigurator where CellType.ViewType == ViewType, CellType: UITableViewCell {
     
-    static var reuseId: String { return String(describing: CellType.self) }
+    static var cellType: CellType.Type { return CellType.self }
+    static var reuseId: String { return CellType.reuseId }
     
-    let item: DataType
+    let item: ViewType.DataType
     
-    init(item: DataType) {
+    init(item: ViewType.DataType) {
         self.item = item
     }
     
     func configure(cell: UIView) {
-        (cell as! CellType).configure(data: item)
+        (cell as! CellType).view.configure(data: item)
     }
 }

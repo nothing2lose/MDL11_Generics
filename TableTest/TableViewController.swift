@@ -14,9 +14,19 @@ class TableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 50
         self.tableView.tableFooterView = UIView()
+        
+//        viewModel.cellTypes.forEach({
+//            self.tableView.register($0, forCellReuseIdentifier: )
+//        })
+        
+        self.tableView.register(Test1Config.cellType, forCellReuseIdentifier: Test1Config.reuseId)
+        self.tableView.register(Test2Config.cellType, forCellReuseIdentifier: Test2Config.reuseId)
+        
+//        let v = Custom1View(frame: .zero)
+//        v.configure(data: <#T##Custom1View.ViewModel#>)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -29,6 +39,7 @@ class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = viewModel.items[indexPath.row]
+                
 
         let cell = tableView.dequeueReusableCell(withIdentifier: type(of: item).reuseId)!
         item.configure(cell: cell)
